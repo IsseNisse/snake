@@ -29,9 +29,12 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
 
+snake = [1, 2, 3]
+
 game_over = False
 
-def detect_collision(player_pos, fruit_pos):
+
+def detect_collision():
     player_x = player_pos[0]
     player_y = player_pos[1]
 
@@ -46,6 +49,10 @@ def detect_collision(player_pos, fruit_pos):
 
 def draw_fruit():
     pygame.draw.rect(screen, RED, (fruit_pos[0], fruit_pos[1], fruit_size, fruit_size))
+
+
+def draw_snake():
+    pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], player_size, player_size))
 
 
 while not game_over:
@@ -93,15 +100,19 @@ while not game_over:
     draw_fruit()
 
     text = "Score: " + str(count)
-    label = my_font.render(text, 1, RED)
+    label = my_font.render(text, True, RED)
     screen.blit(label, (WIDTH - 200, HEIGHT - 40))
 
-    if detect_collision(player_pos, fruit_pos):
+    if detect_collision():
         fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
         draw_fruit()
         count += 1
+        snake.append(count)
 
-    pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], player_size, player_size))
+    for i in range(len(snake)):
+        added_part_x = player_pos[0] + 5
+        added_part_y = player_pos[1] + 5
+        draw_snake(added_part_x, added_part_y)
 
     player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
 
