@@ -19,6 +19,12 @@ fruit_size = 10
 new_x = 10
 new_y = 0
 
+speed = 10
+
+count = 0
+
+my_font = pygame.font.SysFont("monospace", 25)
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
@@ -52,42 +58,48 @@ while not game_over:
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_LEFT:
-                if new_x == 10:
-                    new_x = 10
+                if new_x == speed:
+                    new_x = speed
                     new_y = 0
                 else:
-                    new_x = -10
+                    new_x = -speed
                     new_y = 0
 
             elif event.key == pygame.K_RIGHT:
-                if new_x == -10:
-                    new_x = -10
+                if new_x == -speed:
+                    new_x = -speed
                     new_y = 0
                 else:
-                    new_x = 10
+                    new_x = speed
                     new_y = 0
             elif event.key == pygame.K_UP:
-                if new_y == 10:
+                if new_y == speed:
                     new_x = 0
-                    new_y = 10
+                    new_y = speed
                 else:
                     new_x = 0
-                    new_y = -10
+                    new_y = -speed
             elif event.key == pygame.K_DOWN:
-                if new_y == -10:
+                if new_y == -speed:
                     new_x = 0
-                    new_y = -10
+                    new_y = -speed
                 else:
                     new_x = 0
-                    new_y = 10
+                    new_y = speed
             player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
 
     screen.fill((0, 0, 0))
 
     draw_fruit()
+
+    text = "Score: " + str(count)
+    label = my_font.render(text, 1, RED)
+    screen.blit(label, (WIDTH - 200, HEIGHT - 40))
+
     if detect_collision(player_pos, fruit_pos):
         fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
         draw_fruit()
+        count += 1
 
     pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], player_size, player_size))
 
