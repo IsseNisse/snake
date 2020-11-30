@@ -11,7 +11,10 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
 player_pos = [400, 300]
+player_size = 10
+
 fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
+fruit_size = 10
 
 new_x = 10
 new_y = 0
@@ -29,7 +32,18 @@ def detect_collision(player_pos, fruit_pos):
     fruit_x = fruit_pos[0]
     fruit_y = fruit_pos[1]
 
+    if (player_x <= fruit_x < (player_x + player_size)) or (fruit_x <= player_x < (fruit_x + fruit_size)):
+        if (player_y <= fruit_y < (player_y + player_size)) or (fruit_y <= player_y < (fruit_y + fruit_size)):
+            return True
+    return False
+
+
+def draw_fruit():
+    pygame.draw.rect(screen, RED, (fruit_pos[0], fruit_pos[1], fruit_size, fruit_size))
+
+
 while not game_over:
+
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
@@ -70,8 +84,13 @@ while not game_over:
 
     screen.fill((0, 0, 0))
 
-    pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], 10, 10))
-    pygame.draw.rect(screen, RED, (fruit_pos[0], fruit_pos[1], 10, 10))
+    draw_fruit()
+    if detect_collision(player_pos, fruit_pos):
+        fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
+        draw_fruit()
+
+    pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], player_size, player_size))
+
     player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
 
     clock.tick(10)
