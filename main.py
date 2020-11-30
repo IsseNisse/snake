@@ -1,26 +1,38 @@
-import pygame
-import sys
 import random
+import pygame, sys
+import ctypes
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 pygame.init()
 
-WIDTH = 800
-HEIGHT = 500
+WIDTH = 96
+HEIGHT = 96
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
 player_pos = [400, 300]
+
 fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
 
 new_x = 10
 new_y = 0
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+w, h = screensize
+
+print(screen)
+
+pygame.transform.smoothscale(screen, (w, h))
+
+screen = pygame.display.set_mode(screen.get_size(), pygame.FULLSCREEN)
 
 clock = pygame.time.Clock()
 
 game_over = False
+
+print(screen)
 
 def detect_collision(player_pos, fruit_pos):
     player_x = player_pos[0]
@@ -32,10 +44,14 @@ def detect_collision(player_pos, fruit_pos):
 while not game_over:
     for event in pygame.event.get():
 
+
         if event.type == pygame.QUIT:
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_ESCAPE:
+                pygame.display.quit()
 
             if event.key == pygame.K_LEFT:
                 if new_x == 10:
