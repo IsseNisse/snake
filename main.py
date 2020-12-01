@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+from Snake import Snake
 
 pygame.init()
 
@@ -19,6 +20,8 @@ fruit_size = 10
 new_x = 10
 new_y = 0
 
+snake_body_parts = [0]
+
 speed = 10
 
 count = 0
@@ -28,8 +31,6 @@ my_font = pygame.font.SysFont("monospace", 25)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 clock = pygame.time.Clock()
-
-snake = [1, 2, 3]
 
 game_over = False
 
@@ -49,10 +50,6 @@ def detect_collision():
 
 def draw_fruit():
     pygame.draw.rect(screen, RED, (fruit_pos[0], fruit_pos[1], fruit_size, fruit_size))
-
-
-def draw_snake():
-    pygame.draw.rect(screen, WHITE, (player_pos[0], player_pos[1], player_size, player_size))
 
 
 while not game_over:
@@ -107,15 +104,27 @@ while not game_over:
         fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
         draw_fruit()
         count += 1
-        snake.append(count)
+        snake_body_parts.append(count)
 
-    for i in range(len(snake)):
-        added_part_x = player_pos[0] + 5
-        added_part_y = player_pos[1] + 5
-        draw_snake(added_part_x, added_part_y)
+    for i in range(len(snake_body_parts)):
+        if new_x < 0:
+            new_body_pos_x = player_pos[0] + (i * 11)
+            new_body_pos_y = player_pos[1]
+        elif new_x > 0:
+            new_body_pos_x = player_pos[0] + (-i * 11)
+            new_body_pos_y = player_pos[1]
+        elif new_y < 0:
+            new_body_pos_y = player_pos[1] + (i * 11)
+            new_body_pos_x = player_pos[0]
+        elif new_y > 0:
+            new_body_pos_y = player_pos[1] + (-i * 11)
+            new_body_pos_x = player_pos[0]
+        snake = Snake(snake_body_parts, player_pos)
+        snake.draw_body_part(screen, WHITE, new_body_pos_x, new_body_pos_y, player_size)
 
     player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
 
+    print(snake_body_parts)
     clock.tick(10)
 
     pygame.display.update()
