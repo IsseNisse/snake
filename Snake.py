@@ -2,9 +2,10 @@ import pygame
 
 
 class Snake:
-    def __init__(self, body_parts, position):
+    def __init__(self, body_parts):
         self.body_parts = body_parts
-        self.position = position
 
-    def draw_body_part(self, screen, color, position_x, position_y, size):
-        pygame.draw.rect(screen, color, (position_x, position_y, size, size))
+    def draw_body_part(self, screen, color, size):
+        for part in self.body_parts:
+            pygame.draw.rect(screen, color, (part.x, part.y, size, size))
+

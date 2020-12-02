@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 from Snake import Snake
+from body_parts import body_parts
 
 pygame.init()
 
@@ -11,7 +12,6 @@ HEIGHT = 500
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
-player_pos = [400, 300]
 player_size = 10
 
 fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
@@ -20,11 +20,18 @@ fruit_size = 10
 new_x = 10
 new_y = 0
 
-snake_body_parts = [0]
+x = []
+y = []
+
+snake_body_parts = []
 
 speed = 10
 
 count = 0
+
+head = body_parts(400, 300)
+snake_body_parts.append(head)
+snake = Snake(snake_body_parts)
 
 my_font = pygame.font.SysFont("monospace", 25)
 
@@ -36,8 +43,8 @@ game_over = False
 
 
 def detect_collision():
-    player_x = player_pos[0]
-    player_y = player_pos[1]
+    player_x = snake_body_parts[0].x
+    player_y = snake_body_parts[0].y
 
     fruit_x = fruit_pos[0]
     fruit_y = fruit_pos[1]
@@ -90,7 +97,8 @@ while not game_over:
                 else:
                     new_x = 0
                     new_y = speed
-            player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
+            snake_body_parts[0].x += new_x
+            snake_body_parts[0].y += new_y
 
     screen.fill((0, 0, 0))
 
@@ -106,25 +114,30 @@ while not game_over:
         count += 1
         snake_body_parts.append(count)
 
-    for i in range(len(snake_body_parts)):
-        if new_x < 0:
-            new_body_pos_x = player_pos[0] + (i * 11)
-            new_body_pos_y = player_pos[1]
-        elif new_x > 0:
-            new_body_pos_x = player_pos[0] + (-i * 11)
-            new_body_pos_y = player_pos[1]
-        elif new_y < 0:
-            new_body_pos_y = player_pos[1] + (i * 11)
-            new_body_pos_x = player_pos[0]
-        elif new_y > 0:
-            new_body_pos_y = player_pos[1] + (-i * 11)
-            new_body_pos_x = player_pos[0]
-        snake = Snake(snake_body_parts, player_pos)
-        snake.draw_body_part(screen, WHITE, new_body_pos_x, new_body_pos_y, player_size)
+        for i in range(len(snake_body_parts)):
+            new_body_pos_x = 0
+            new_body_pos_y = 0
+            if new_x < 0:
+                new_body_pos_x = snake_body_parts[i - 1].x + (i * 11)
+                new_body_pos_y = snake_body_parts[i - 1].y
+            elif new_x > 0:
+                new_body_pos_x = snake_body_parts[i - 1].x + (-i * 11)
+                new_body_pos_y = snake_body_parts[i - 1].y
+            elif new_y < 0:
+                new_body_pos_y = snake_body_parts[i - 1].y + (i * 11)
+                new_body_pos_x = snake_body_parts[i - 1].x
+            elif new_y > 0:
+                new_body_pos_y = snake_body_parts[i - 1].y + (-i * 11)
+                new_body_pos_x = snake_body_parts[i - 1].x
 
-    player_pos = [player_pos[0] + new_x, player_pos[1] + new_y]
+            body_part = body_parts(new_body_pos_x, new_body_pos_y)
+            print(snake_body_parts[i].x)
+            snake_body_parts.append(body_part)
 
-    print(snake_body_parts)
+    snake_body_parts[0].x += new_x
+    snake_body_parts[0].y += new_y
+    snake.draw_body_part(screen, WHITE, player_size)
+
     clock.tick(10)
 
     pygame.display.update()
