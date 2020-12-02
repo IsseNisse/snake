@@ -60,7 +60,6 @@ def draw_fruit():
 
 
 while not game_over:
-
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
@@ -99,6 +98,10 @@ while not game_over:
                     new_y = speed
             snake_body_parts[0].x += new_x
             snake_body_parts[0].y += new_y
+            for i in range(len(snake_body_parts)):
+                if i > 0:
+                    snake_body_parts[i].x = snake_body_parts[i - 1].x - new_x
+                    snake_body_parts[i].y = snake_body_parts[i - 1].y - new_y
 
     screen.fill((0, 0, 0))
 
@@ -112,30 +115,36 @@ while not game_over:
         fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
         draw_fruit()
         count += 1
-        snake_body_parts.append(count)
 
-        for i in range(len(snake_body_parts)):
-            new_body_pos_x = 0
-            new_body_pos_y = 0
-            if new_x < 0:
-                new_body_pos_x = snake_body_parts[i - 1].x + (i * 11)
-                new_body_pos_y = snake_body_parts[i - 1].y
-            elif new_x > 0:
-                new_body_pos_x = snake_body_parts[i - 1].x + (-i * 11)
-                new_body_pos_y = snake_body_parts[i - 1].y
-            elif new_y < 0:
-                new_body_pos_y = snake_body_parts[i - 1].y + (i * 11)
-                new_body_pos_x = snake_body_parts[i - 1].x
-            elif new_y > 0:
-                new_body_pos_y = snake_body_parts[i - 1].y + (-i * 11)
-                new_body_pos_x = snake_body_parts[i - 1].x
+        i = len(snake_body_parts) - 1
+        print(snake_body_parts[i].x, snake_body_parts[i].y)
+        new_body_pos_x = 0
+        new_body_pos_y = 0
+        if new_x < 0:
+            new_body_pos_x = snake_body_parts[i].x + speed
+            new_body_pos_y = snake_body_parts[i].y
+        elif new_x > 0:
+            new_body_pos_x = snake_body_parts[i].x - speed
+            new_body_pos_y = snake_body_parts[i].y
+        elif new_y < 0:
+            new_body_pos_y = snake_body_parts[i].y + speed
+            new_body_pos_x = snake_body_parts[i].x
+        elif new_y > 0:
+            new_body_pos_y = snake_body_parts[i].y - speed
+            new_body_pos_x = snake_body_parts[i].x
 
-            body_part = body_parts(new_body_pos_x, new_body_pos_y)
-            print(snake_body_parts[i].x)
-            snake_body_parts.append(body_part)
+        print(new_body_pos_x, new_body_pos_y)
+        body_part = body_parts(new_body_pos_x, new_body_pos_y)
+        snake_body_parts.append(body_part)
+        snake.update(snake_body_parts)
 
     snake_body_parts[0].x += new_x
     snake_body_parts[0].y += new_y
+    for i in range(len(snake_body_parts)):
+        if i > 0:
+            snake_body_parts[i].x += new_x
+            snake_body_parts[i].y += new_y
+
     snake.draw_body_part(screen, WHITE, player_size)
 
     clock.tick(10)
