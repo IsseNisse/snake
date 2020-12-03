@@ -14,7 +14,8 @@ RED = (255, 0, 0)
 player_pos = [400, 300]
 player_size = 10
 
-fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
+fruit_pos = [round(random.randint(0, WIDTH), -1), round(random.randint(0, HEIGHT), -1)]
+
 fruit_size = 10
 
 new_x = 10
@@ -108,16 +109,16 @@ while not game_over:
 
     for i in range(len(snake_body_parts)):
         if new_x < 0:
-            new_body_pos_x = player_pos[0] + (i * 11)
+            new_body_pos_x = player_pos[0] + (i * 10)
             new_body_pos_y = player_pos[1]
         elif new_x > 0:
-            new_body_pos_x = player_pos[0] + (-i * 11)
+            new_body_pos_x = player_pos[0] + (-i * 10)
             new_body_pos_y = player_pos[1]
         elif new_y < 0:
-            new_body_pos_y = player_pos[1] + (i * 11)
+            new_body_pos_y = player_pos[1] + (i * 10)
             new_body_pos_x = player_pos[0]
         elif new_y > 0:
-            new_body_pos_y = player_pos[1] + (-i * 11)
+            new_body_pos_y = player_pos[1] + (-i * 10)
             new_body_pos_x = player_pos[0]
         snake = Snake(snake_body_parts, player_pos)
         snake.draw_body_part(screen, WHITE, new_body_pos_x, new_body_pos_y, player_size)
