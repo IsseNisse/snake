@@ -4,6 +4,8 @@ import sys
 import random
 from Snake import Snake
 from body_parts import body_parts
+from Powers import Powers
+from Player import Player
 
 pygame.init()
 
@@ -12,37 +14,52 @@ HEIGHT = 500
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 player_size = 10
 
 fruit_size = 10
 fruit_pos = [random.randint(0, WIDTH - fruit_size), random.randint(0, HEIGHT - fruit_size)]
 
-new_x = 10
-new_y = 0
+p1_new_x = 10
+p1_new_y = 0
+p2_new_x = 10
+p2_new_y = 0
 
-snake_body_parts = []
+p1_snake_body_parts = []
+p2_snake_body_parts = []
+player1_obstacles = []
 
 speed = 10
 
 count = 0
 
-head = body_parts(400, 300)
-snake_body_parts.append(head)
-snake = Snake(snake_body_parts)
+p1_head = body_parts(400, 300)
+p1_snake_body_parts.append(p1_head)
+p1_snake = Snake(p1_snake_body_parts)
+
+p2_head = body_parts(600, 300)
+p2_snake_body_parts.append(p2_head)
+p2_snake = Snake(p2_snake_body_parts)
 
 my_font = pygame.font.SysFont("monospace", 25)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+player1 = Player(screen, p1_snake, WHITE, player_size)
+player2 = Player(screen, p2_snake, WHITE, player_size)
+
+powers = Powers(screen)
+functions = [powers.add_cube]
 
 clock = pygame.time.Clock()
 
 game_over = False
 
 
-def detect_collision_fruit():
-    player_x = snake_body_parts[0].x
-    player_y = snake_body_parts[0].y
+def p1_detect_collision_fruit():
+    player_x = p1_snake_body_parts[0].x
+    player_y = p1_snake_body_parts[0].y
 
     fruit_x = fruit_pos[0]
     fruit_y = fruit_pos[1]
@@ -83,34 +100,63 @@ while not game_over:
             if event.type == pygame.KEYDOWN:
                 start_timer = pygame.time.get_ticks()
                 if event.key == pygame.K_LEFT:
-                    if new_x == speed:
-                        new_x = speed
-                        new_y = 0
+                    if p1_new_x == speed:
+                        p1_new_x = speed
+                        p1_new_y = 0
                     else:
-                        new_x = -speed
-                        new_y = 0
+                        p1_new_x = -speed
+                        p1_new_y = 0
 
                 elif event.key == pygame.K_RIGHT:
-                    if new_x == -speed:
-                        new_x = -speed
-                        new_y = 0
+                    if p1_new_x == -speed:
+                        p1_new_x = -speed
+                        p1_new_y = 0
                     else:
-                        new_x = speed
-                        new_y = 0
+                        p1_new_x = speed
+                        p1_new_y = 0
                 elif event.key == pygame.K_UP:
-                    if new_y == speed:
-                        new_x = 0
-                        new_y = speed
+                    if p1_new_y == speed:
+                        p1_new_x = 0
+                        p1_new_y = speed
                     else:
-                        new_x = 0
-                        new_y = -speed
+                        p1_new_x = 0
+                        p1_new_y = -speed
                 elif event.key == pygame.K_DOWN:
-                    if new_y == -speed:
-                        new_x = 0
-                        new_y = -speed
+                    if p1_new_y == -speed:
+                        p1_new_x = 0
+                        p1_new_y = -speed
                     else:
-                        new_x = 0
-                        new_y = speed
+                        p1_new_x = 0
+                        p1_new_y = speed
+                if event.key == pygame.K_a:
+                    if p2_new_x == speed:
+                        p2_new_x = speed
+                        p2_new_y = 0
+                    else:
+                        p2_new_x = -speed
+                        p2_new_y = 0
+
+                elif event.key == pygame.K_d:
+                    if p2_new_x == -speed:
+                        p2_new_x = -speed
+                        p2_new_y = 0
+                    else:
+                        p2_new_x = speed
+                        p2_new_y = 0
+                elif event.key == pygame.K_w:
+                    if p2_new_y == speed:
+                        p2_new_x = 0
+                        p2_new_y = speed
+                    else:
+                        p2_new_x = 0
+                        p2_new_y = -speed
+                elif event.key == pygame.K_s:
+                    if p2_new_y == -speed:
+                        p2_new_x = 0
+                        p2_new_y = -speed
+                    else:
+                        p2_new_x = 0
+                        p2_new_y = speed
                 flag = True
 
     screen.fill((0, 0, 0))
@@ -124,37 +170,33 @@ while not game_over:
     # if detect_collision_snake():
     #     game_over = True
 
-    if detect_collision_fruit():
+    if p1_detect_collision_fruit():
         fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
         draw_fruit()
         count += 1
 
-        i = len(snake_body_parts) - 1
+        i = len(p1_snake_body_parts) - 1
         new_body_pos_x = 0
         new_body_pos_y = 0
-        if new_x < 0:
-            new_body_pos_x = snake_body_parts[i].x + speed
-            new_body_pos_y = snake_body_parts[i].y
-        elif new_x > 0:
-            new_body_pos_x = snake_body_parts[i].x - speed
-            new_body_pos_y = snake_body_parts[i].y
-        elif new_y < 0:
-            new_body_pos_y = snake_body_parts[i].y + speed
-            new_body_pos_x = snake_body_parts[i].x
-        elif new_y > 0:
-            new_body_pos_y = snake_body_parts[i].y - speed
-            new_body_pos_x = snake_body_parts[i].x
+        if p1_new_x < 0:
+            new_body_pos_x = p1_snake_body_parts[i].x + speed
+            new_body_pos_y = p1_snake_body_parts[i].y
+        elif p1_new_x > 0:
+            new_body_pos_x = p1_snake_body_parts[i].x - speed
+            new_body_pos_y = p1_snake_body_parts[i].y
+        elif p1_new_y < 0:
+            new_body_pos_y = p1_snake_body_parts[i].y + speed
+            new_body_pos_x = p1_snake_body_parts[i].x
+        elif p1_new_y > 0:
+            new_body_pos_y = p1_snake_body_parts[i].y - speed
+            new_body_pos_x = p1_snake_body_parts[i].x
 
         body_part = body_parts(new_body_pos_x, new_body_pos_y)
-        snake_body_parts.append(body_part)
+        p1_snake_body_parts.append(body_part)
 
-    head = snake_body_parts[0]
-    tail = snake_body_parts.pop()
-    tail.x = head.x + new_x
-    tail.y = head.y + new_y
-    snake_body_parts.insert(0, tail)
-    snake.update(snake_body_parts)
-    snake.draw_body_part(screen, WHITE, player_size)
+    player1.move(p1_snake_body_parts, p1_new_x, p1_new_y)
+    player2.move(p2_snake_body_parts, p2_new_x, p2_new_y)
+
     clock.tick(10)
 
     pygame.display.update()
