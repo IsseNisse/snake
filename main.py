@@ -2,6 +2,7 @@ import time
 import pygame
 import sys
 import random
+from Powers import change_speed
 from Snake import Snake
 from body_parts import body_parts
 
