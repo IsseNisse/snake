@@ -10,5 +10,5 @@ class Powers:
         pos = [random.randint(0, 800 - 10), random.randint(0, 400 - 10)]
         return pos
 
-    def draw_cube(self, color):
+    def draw_cube(self, color, pos):
         pygame.draw.rect(self.screen, color, (round(pos[0], -1), round(pos[1], -1), 10, 10))

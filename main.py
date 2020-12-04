@@ -20,12 +20,13 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 
 player_size = 10
 
 fruit_size = 10
-p1_fruit_pos = [random.randint(fruit_size, WIDTH_HALF - fruit_size), random.randint(fruit_size, HEIGHT - fruit_size)]
-p2_fruit_pos = [random.randint(WIDTH_HALF, WIDTH - fruit_size), random.randint(fruit_size, HEIGHT - fruit_size)]
+p1_fruit_pos = [round(random.randint(fruit_size, WIDTH_HALF - fruit_size), -1), round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
+p2_fruit_pos = [round(random.randint(WIDTH_HALF, WIDTH - fruit_size), -1), round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
 
 p1_new_x = 10
 p1_new_y = 0
@@ -34,11 +35,13 @@ p2_new_y = 0
 
 p1_snake_body_parts = []
 p2_snake_body_parts = []
-player1_obstacles = []
+p1_obstacles = []
+p2_obstacles = []
 
 speed = 10
 
-count = 0
+p1_count = 0
+p2_count = 0
 
 p1_head = body_parts(100, 300)
 p1_snake_body_parts.append(p1_head)
@@ -178,17 +181,23 @@ while not game_over:
     draw_fruit(p1_fruit_pos)
     draw_fruit(p2_fruit_pos)
 
-    text = "Score: " + str(count)
-    label = my_font.render(text, True, RED)
-    screen.blit(label, (WIDTH - 200, HEIGHT - 40))
+    p2_text = "Player 2 Score: " + str(p1_count)
+    p2_label = my_font.render(p2_text, True, RED)
+    screen.blit(p2_label, (WIDTH_HALF + 40, HEIGHT - 40))
+    p1_text = "Player 1 Score: " + str(p1_count)
+    p1_label = my_font.render(p1_text, True, RED)
+    screen.blit(p1_label, (40, HEIGHT - 40))
 
     # if detect_collision_snake():
     #     game_over = True
 
     if detect_collision_fruit(p1_snake_body_parts, p1_fruit_pos):
-        p1_fruit_pos = [random.randint(fruit_size, WIDTH_HALF), random.randint(0, HEIGHT)]
+        p1_fruit_pos = [round(random.randint(fruit_size, WIDTH_HALF - fruit_size), -1), round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
+        for i in range(len(p1_obstacles)):
+            if p1_fruit_pos == p1_obstacles[i]:
+                p1_fruit_pos = [round(random.randint(fruit_size, WIDTH_HALF - fruit_size), -1), round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
         draw_fruit(p1_fruit_pos)
-        count += 1
+        p1_count += 1
 
         i = len(p1_snake_body_parts) - 1
         new_body_pos_x = 0
@@ -209,10 +218,13 @@ while not game_over:
         body_part = body_parts(new_body_pos_x, new_body_pos_y)
         p1_snake_body_parts.append(body_part)
 
+        cube_pos = [round(random.randint(WIDTH_HALF, WIDTH), -1), round(random.randint(0, HEIGHT), -1)]
+        p2_obstacles.append(cube_pos)
+
     elif detect_collision_fruit(p2_snake_body_parts, p2_fruit_pos):
-        p2_fruit_pos = [random.randint(WIDTH_HALF, WIDTH), random.randint(0, HEIGHT)]
+        p2_fruit_pos = [round(random.randint(WIDTH_HALF, WIDTH - fruit_size), -1), round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
         draw_fruit(p2_fruit_pos)
-        count += 1
+        p2_count += 1
 
         i = len(p2_snake_body_parts) - 1
         new_body_pos_x = 0
@@ -232,6 +244,16 @@ while not game_over:
 
         body_part = body_parts(new_body_pos_x, new_body_pos_y)
         p2_snake_body_parts.append(body_part)
+
+        cube_pos = [round(random.randint(fruit_size, WIDTH_HALF), -1), round(random.randint(0, HEIGHT), -1)]
+        p1_obstacles.append(cube_pos)
+    for i in range(len(p1_obstacles)):
+        if detect_collision_wall(p1_snake_body_parts, p1_obstacles[i][0], p1_obstacles[i][1]):
+            game_over = True
+
+    for i in range(len(p2_obstacles)):
+        if detect_collision_wall(p2_snake_body_parts, p2_obstacles[i][0], p2_obstacles[i][1]):
+            game_over = True
 
     if p1_snake_body_parts[0].x < 10:
         if p1_new_x < 0:
@@ -277,6 +299,12 @@ while not game_over:
 
     for i in range(HEIGHT):
         pygame.draw.rect(screen, BLUE, (WIDTH_HALF, i * 10, 5, 5))
+
+    for i in range(len(p1_obstacles)):
+        powers.draw_cube(GREEN, p1_obstacles[i])
+
+    for i in range(len(p2_obstacles)):
+        powers.draw_cube(YELLOW, p2_obstacles[i])
 
     player1.move(p1_snake_body_parts, p1_new_x, p1_new_y)
     player2.move(p2_snake_body_parts, p2_new_x, p2_new_y)
