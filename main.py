@@ -3,12 +3,9 @@ import sys
 import random
 from Snake import Snake
 from body_parts import body_parts
-<<<<<<< HEAD
-=======
 from Powers import Powers
 from Player import Player
 import pygame_menu
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
 
 pygame.init()
 
@@ -29,28 +26,20 @@ YELLOW = (255, 255, 0)
 player_size = 10
 
 fruit_size = 10
-<<<<<<< HEAD
-fruit_pos = [random.randint(0, WIDTH - fruit_size), random.randint(0, HEIGHT - fruit_size)]
-=======
 p1_fruit_pos = [round(random.randint(fruit_size, WIDTH_HALF - fruit_size), -1),
                 round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
 p2_fruit_pos = [round(random.randint(WIDTH_HALF, WIDTH - fruit_size), -1),
                 round(random.randint(fruit_size, HEIGHT - fruit_size), -1)]
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
 
 p1_new_x = 10
 p1_new_y = 0
 p2_new_x = 10
 p2_new_y = 0
 
-<<<<<<< HEAD
-snake_body_parts = []
-=======
 p1_snake_body_parts = []
 p2_snake_body_parts = []
 p1_obstacles = []
 p2_obstacles = []
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
 
 speed = 10
 
@@ -65,10 +54,6 @@ p2_head = body_parts(600, 300)
 p2_snake_body_parts.append(p2_head)
 p2_snake = Snake(p2_snake_body_parts)
 
-head = body_parts(400, 300)
-snake_body_parts.append(head)
-snake = Snake(snake_body_parts)
-
 my_font = pygame.font.SysFont("monospace", 25)
 
 player1 = Player(screen, p1_snake, WHITE, player_size)
@@ -82,16 +67,12 @@ clock = pygame.time.Clock()
 game_over = False
 
 
-<<<<<<< HEAD
-def detect_collision_fruit():
-=======
 def text_objects(text, font, color):
     text_surface = font.render(text, True, color)
     return text_surface, text_surface.get_rect()
 
 
 def detect_collision_fruit(snake_body_parts, fruit_pos):
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
     player_x = snake_body_parts[0].x
     player_y = snake_body_parts[0].y
 
@@ -104,8 +85,6 @@ def detect_collision_fruit(snake_body_parts, fruit_pos):
     return False
 
 
-<<<<<<< HEAD
-=======
 def detect_collision_wall(snake_body_parts, width, height):
     player_x = snake_body_parts[0].x
     player_y = snake_body_parts[0].y
@@ -119,7 +98,6 @@ def detect_collision_wall(snake_body_parts, width, height):
     return False
 
 
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
 # def detect_collision_snake():
 #     for j in range(2, len(snake_body_parts)):
 #
@@ -135,17 +113,6 @@ def detect_collision_wall(snake_body_parts, width, height):
 #         return False
 
 
-<<<<<<< HEAD
-def draw_fruit():
-    pygame.draw.rect(screen, RED, (round(fruit_pos[0], -1), round(fruit_pos[1], -1), fruit_size, fruit_size))
-
-
-while not game_over:
-    snake_index = 0
-    flag = False
-    for event in pygame.event.get():
-        if not flag:
-=======
 def draw_fruit(fruit_pos):
     pygame.draw.rect(screen, RED, (round(fruit_pos[0], -1), round(fruit_pos[1], -1), fruit_size, fruit_size))
 
@@ -154,90 +121,10 @@ def game_loop():
     global p2_new_x, p2_new_y, p1_new_x, p1_new_y, p1_fruit_pos, p2_fruit_pos, game_over, p1_count, p2_count, player2_wins, player1_wins
     while not game_over:
         for event in pygame.event.get():
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
             if event.type == pygame.QUIT:
                 sys.exit()
 
             if event.type == pygame.KEYDOWN:
-<<<<<<< HEAD
-                start_timer = pygame.time.get_ticks()
-                if event.key == pygame.K_LEFT:
-                    if new_x == speed:
-                        new_x = speed
-                        new_y = 0
-                    else:
-                        new_x = -speed
-                        new_y = 0
-
-                elif event.key == pygame.K_RIGHT:
-                    if new_x == -speed:
-                        new_x = -speed
-                        new_y = 0
-                    else:
-                        new_x = speed
-                        new_y = 0
-                elif event.key == pygame.K_UP:
-                    if new_y == speed:
-                        new_x = 0
-                        new_y = speed
-                    else:
-                        new_x = 0
-                        new_y = -speed
-                elif event.key == pygame.K_DOWN:
-                    if new_y == -speed:
-                        new_x = 0
-                        new_y = -speed
-                    else:
-                        new_x = 0
-                        new_y = speed
-                flag = True
-
-    screen.fill((0, 0, 0))
-
-    draw_fruit()
-
-    text = "Score: " + str(count)
-    label = my_font.render(text, True, RED)
-    screen.blit(label, (WIDTH - 200, HEIGHT - 40))
-
-    # if detect_collision_snake():
-    #     game_over = True
-
-    if detect_collision_fruit():
-        fruit_pos = [random.randint(0, WIDTH), random.randint(0, HEIGHT)]
-        draw_fruit()
-        count += 1
-
-        i = len(snake_body_parts) - 1
-        new_body_pos_x = 0
-        new_body_pos_y = 0
-        if new_x < 0:
-            new_body_pos_x = snake_body_parts[i].x + speed
-            new_body_pos_y = snake_body_parts[i].y
-        elif new_x > 0:
-            new_body_pos_x = snake_body_parts[i].x - speed
-            new_body_pos_y = snake_body_parts[i].y
-        elif new_y < 0:
-            new_body_pos_y = snake_body_parts[i].y + speed
-            new_body_pos_x = snake_body_parts[i].x
-        elif new_y > 0:
-            new_body_pos_y = snake_body_parts[i].y - speed
-            new_body_pos_x = snake_body_parts[i].x
-
-        body_part = body_parts(new_body_pos_x, new_body_pos_y)
-        snake_body_parts.append(body_part)
-
-    head = snake_body_parts[0]
-    tail = snake_body_parts.pop()
-    tail.x = head.x + new_x
-    tail.y = head.y + new_y
-    snake_body_parts.insert(0, tail)
-    snake.update(snake_body_parts)
-    snake.draw_body_part(screen, WHITE, player_size)
-    clock.tick(10)
-
-    pygame.display.update()
-=======
                 if event.key == pygame.K_LEFT:
                     if p2_new_x == speed:
                         p2_new_x = speed
@@ -438,4 +325,3 @@ def game_loop():
 menu = pygame_menu.Menu(300, 400, 'Snake Duals', theme=pygame_menu.themes.THEME_DARK)
 menu.add_button('Play', game_loop)
 menu.mainloop(screen)
->>>>>>> 9593256883cd1d67cc5821a314615ca1dad646ed
